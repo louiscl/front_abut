@@ -17,7 +17,11 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 // added MUI
 import TextField from "@mui/material/TextField";
 // API
-import { fetchBuildingData, fetchRentalData } from "../ApiRequests";
+import {
+  fetchBuildingData,
+  fetchRentalData,
+  normalizeAddress,
+} from "../ApiRequests";
 // image
 import Image from "../img/abstract_wave.jpeg";
 
@@ -198,7 +202,9 @@ export default function LandingPage() {
               {/* <Button
                 // onClick={() => fetchRentalData(addressHash)}
                 onClick={() =>
-                  fetchBuildingData("610 SW 24th Rd, Miami, FL 33129")
+                  console.log(
+                    normalizeAddress("610 SW 24th Rd, Miami, FL 33129")
+                  )
                 }
                 variant="contained"
               >

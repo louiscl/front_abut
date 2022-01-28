@@ -59,6 +59,21 @@ const fetchBuildingData = async (address) => {
 
 // AirDNA
 
+const normalizeAddress = async (address) => {
+  const listRequestOptions = {
+    method: "GET",
+    headers: requestHeaders,
+  };
+
+  const res = await fetch(
+    `${base_link}/fix_add/${address}`,
+    listRequestOptions
+  );
+
+  const data = await res.json();
+  return data;
+};
+
 const fetchRentalData = async (addressHash) => {
   // link defaults to proxy defined in package.json
   const state = addressHash["state"];
@@ -93,4 +108,4 @@ const fetchRentalData = async (addressHash) => {
   return data["content"]["retnal_rates"];
 };
 
-export { fetchBuildingData, fetchRentalData };
+export { fetchBuildingData, fetchRentalData, normalizeAddress };
