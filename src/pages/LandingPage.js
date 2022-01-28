@@ -2,13 +2,11 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import AppBar from "@mui/material/AppBar";
 import Button from "@mui/material/Button";
-// import CameraIcon from "@mui/icons-material/PhotoCamera";
 import Card from "@mui/material/Card";
-import CardActions from "@mui/material/CardActions";
+import Paper from "@mui/material/Paper";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import CssBaseline from "@mui/material/CssBaseline";
-import Grid from "@mui/material/Grid";
 import Stack from "@mui/material/Stack";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -20,6 +18,14 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import TextField from "@mui/material/TextField";
 // API
 import { fetchBuildingData, fetchRentalData } from "../ApiRequests";
+// image
+import Image from "../img/abstract_wave.jpeg";
+
+const styles = {
+  paperContainer: {
+    backgroundImage: `url(${Image})`,
+  },
+};
 
 function Copyright() {
   return (
@@ -38,16 +44,22 @@ const theme = createTheme();
 
 export default function LandingPage() {
   // Hooks
-  const [address, setAddress] = useState("29 NE 11th St, Miami, FL 33132");
+  const [address, setAddress] = useState("10 NE 11th St, Miami, FL 33132");
   const [addressHash, setAddressHash] = useState();
   const [buildingData, setBuildingData] = useState("Result");
   const [rentalData, setRentalData] = useState("");
   const [rentalStatement, setRentalStatement] = useState("");
+  const [constAddress, setConstAddress] = useState("");
+
   //   const [rentalData, setRentalData] = useState("");
+  const myRef = useRef(null);
+  const executeScroll = () =>
+    myRef.current.scrollIntoView({ behavior: "smooth" });
 
   const saveAddress = () => {
     //   Input format
     //   29 NE 11th St, Miami, FL 33132
+    setConstAddress(address);
     let arr = address.split(",");
     let st = arr[2].split(" ")[1];
     let z = arr[2].split(" ")[2];
@@ -62,11 +74,20 @@ export default function LandingPage() {
     return hash;
   };
 
+  const convertAddress = () => {
+    const ad = constAddress.replace(/,/g, "").replace(/\s/g, "%20");
+    return ad;
+  };
+
   const getRentalData = async (ad) => {
     const rd = await fetchRentalData(ad);
     setRentalData(rd["four_room_value"]);
     return rd;
   };
+
+  function delay(time) {
+    return new Promise((resolve) => setTimeout(resolve, time));
+  }
 
   const determineRevenue = (rentalResult, apartmentClass) => {
     console.log("\x1b[36m%s\x1b[0m", "rentalResult:", "\n", rentalResult);
@@ -91,10 +112,11 @@ export default function LandingPage() {
     console.log(adHash);
 
     // Fetch Building data
-    // const result = await fetchBuildingData(adHash);
-    // console.log("\x1b[36m%s\x1b[0m", "result:", "\n", result);
+    const result = await fetchBuildingData(address);
+    console.log("\x1b[36m%s\x1b[0m", "result:", "\n", result);
     // setBuildingData(result);
     const apartmentClass = "studio_value";
+    console.log("reached");
 
     // // Fetch Rental Data
     const rentalResult = await getRentalData(adHash);
@@ -103,29 +125,36 @@ export default function LandingPage() {
 
     //
     determineRevenue(rentalResult, apartmentClass);
+    delay(400).then(() => executeScroll());
   };
 
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <AppBar position="relative">
+      {/* <AppBar position="relative">
         <Toolbar>
-          {/* <CameraIcon sx={{ mr: 2 }} /> */}
           <Typography variant="h6" color="inherit" noWrap>
             ABUT
           </Typography>
         </Toolbar>
-      </AppBar>
-      <main>
+      </AppBar> */}
+      <Paper style={styles.paperContainer}>
         {/* Hero unit */}
         <Box
           sx={{
-            bgcolor: "background.paper",
+            // bgcolor: "background.paper",
             pt: 8,
             pb: 6,
           }}
         >
-          <Container maxWidth="sm">
+          <Container
+            maxWidth="sm"
+            sx={{
+              bgcolor: "background.paper",
+              pb: 8,
+              borderRadius: 16,
+            }}
+          >
             <Typography
               component="h1"
               variant="h2"
@@ -140,15 +169,22 @@ export default function LandingPage() {
               variant="h5"
               align="center"
               color="text.secondary"
+              sx={{
+                mb: 4,
+              }}
               paragraph
             >
-              [DESCRIPTION]
+              Find out how much you could earn by becoming a Tiny House AirBnb
+              host
             </Typography>
             <TextField
               id="outlined-basic"
               label="Your address"
               variant="outlined"
               onChange={(e) => setAddress(e.target.value)}
+              sx={{
+                width: "80%",
+              }}
             />
             <Stack
               sx={{ pt: 4 }}
@@ -161,12 +197,14 @@ export default function LandingPage() {
               </Button>
               {/* <Button
                 // onClick={() => fetchRentalData(addressHash)}
-                onClick={() => getRentalData()}
+                onClick={() =>
+                  fetchBuildingData("610 SW 24th Rd, Miami, FL 33129")
+                }
                 variant="contained"
               >
-                airbnb rapid api
-              </Button>
-              <Button onClick={() => saveAddress()} variant="contained">
+                API
+              </Button> */}
+              {/* <Button onClick={() => saveAddress()} variant="contained">
                 save address
               </Button>
               <Button
@@ -178,8 +216,9 @@ export default function LandingPage() {
               {/* <Button variant="outlined">Secondary action</Button> */}
             </Stack>
           </Container>
+          <div ref={myRef}></div>
         </Box>
-        <Box>
+        {/* <Box>
           {rentalData == "" ? (
             <></>
           ) : (
@@ -192,60 +231,70 @@ export default function LandingPage() {
               You could earn up to {rentalStatement} USD in the first year!
             </Typography>
           )}
-        </Box>
-        <Container
-          sx={{
-            py: 4,
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "center",
-          }}
-          maxWidth="md"
-        >
-          {/* End hero unit */}
-          <Card
+        </Box> */}
+        {rentalData == "" ? (
+          <Container
             sx={{
               height: "500px",
-              width: "400px",
-              display: "flex",
-              flexDirection: "column",
             }}
+          ></Container>
+        ) : (
+          <Container
+            sx={{
+              py: 4,
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "center",
+            }}
+            maxWidth="md"
           >
-            <CardMedia
-              component="img"
+            {/* End hero unit */}
+            <Card
               sx={{
-                16: 9,
-                height: "300px",
-                // pt: "56.25%",
+                height: "500px",
+                width: "400px",
+                display: "flex",
+                flexDirection: "column",
+                borderRadius: 6,
               }}
-              image="https://source.unsplash.com/random"
-              alt="random"
-            />
-            <CardContent sx={{ flexGrow: 1 }}>
-              <Typography gutterBottom variant="h5" component="h2">
-                {address}
-              </Typography>
-              <Typography>
-                You could earn up to {rentalStatement} USD in the first year!
-              </Typography>
-            </CardContent>
-          </Card>
-        </Container>
-      </main>
+            >
+              <CardMedia
+                component="img"
+                sx={{
+                  16: 9,
+                  height: "300px",
+                  // pt: "56.25%",
+                }}
+                // image={`http://3.92.189.123:8000/location/${convertAddress()}`}
+                image={`http://3.92.189.123:8000/overlay/${convertAddress()}`}
+                alt="random"
+              />
+              <CardContent sx={{ flexGrow: 1 }}>
+                <Typography gutterBottom variant="h6" component="h2">
+                  {constAddress}
+                </Typography>
+                <Typography variant="h5" color="text.secondary">
+                  You could earn up to {rentalStatement} USD in the first year!
+                </Typography>
+              </CardContent>
+            </Card>
+          </Container>
+        )}
+      </Paper>
       {/* Footer */}
       <Box sx={{ bgcolor: "background.paper", p: 6 }} component="footer">
-        <Typography variant="h6" align="center" gutterBottom>
+        {/* <Typography variant="h6" align="center" gutterBottom>
           Footer
-        </Typography>
+        </Typography> */}
         <Typography
           variant="subtitle1"
           align="center"
           color="text.secondary"
           component="p"
         >
-          Something here to give the footer a purpose!
+          (‿ˠ‿)
         </Typography>
-        <Copyright />
+        {/* <Copyright /> */}
       </Box>
       {/* End footer */}
     </ThemeProvider>

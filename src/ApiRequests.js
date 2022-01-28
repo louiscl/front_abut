@@ -1,29 +1,60 @@
 // comment to push cli
 
-const api_address = "http://127.0.0.1:";
 // const port = "5001";
 // const base_link = `${api_address}${port}`;
-const base_link = "https://baseLink.com";
+const base_link = "http://3.92.189.123:8000";
 
 let requestHeaders = new Headers();
 requestHeaders.append("Accept", "application/json");
 requestHeaders.append("Content-Type", "application/json");
 
-const fetchBuildingData = async (addressHash) => {
-  // link defaults to proxy defined in package.json
+// const fetchBuildingData = async (address) => {
+//   //   link defaults to proxy defined in package.json
+//   const listRequestOptions = {
+//     method: "GET",
+//     headers: requestHeaders,
+//     // body: JSON.stringify({ address: addressHash }),
+//   };
+//   const ad = address.replace(/,/g, "").replace(/\s/g, "%20");
+
+//   const r = await fetch(
+//     `${base_link}/predict/${ad}`,
+//     // `${base_link}`,
+//     listRequestOptions
+//   );
+//   //   const d = await r.json();
+//   const res = await fetch(
+//     //   api address:
+//     `${base_link}/location/${ad}`,
+//     // `${base_link}`,
+//     listRequestOptions
+//   );
+// };
+
+const fetchBuildingData = async (address) => {
+  //   link defaults to proxy defined in package.json
   const listRequestOptions = {
-    method: "POST",
+    method: "GET",
     headers: requestHeaders,
-    body: JSON.stringify({ addressHash: addressHash }),
+    // body: JSON.stringify({ address: addressHash }),
   };
-  const res = await fetch(
-    //   api address:
-    `${base_link}/base_link`,
+  const ad = address.replace(/,/g, "").replace(/\s/g, "%20");
+
+  const r = await fetch(
+    `${base_link}/predict/${ad}`,
+    // `${base_link}`,
     listRequestOptions
   );
-  const data = await res.json();
-  console.log("\x1b[36m%s\x1b[0m", "data:", "\n", data);
-  return { data: data };
+  //   const d = await r.json();
+  const res = await fetch(
+    //   api address:
+    `${base_link}/overlay/${ad}`,
+    // `${base_link}`,
+    listRequestOptions
+  );
+  //   const data = await res.json();
+  //   console.log("\x1b[36m%s\x1b[0m", "data:", "\n", data);
+  //   return { data: data };
 };
 
 // AirDNA
@@ -41,12 +72,19 @@ const fetchRentalData = async (addressHash) => {
       "x-rapidapi-key": "300e4f46f4msh89c6351d2a97527p1e17f0jsne39ffd46bb3d",
     },
   };
+  //   const res = await fetch(
+  //     `https://mashvisor-api.p.rapidapi.com/rental-rates?state=${state}&source=airbnb&city=${city}&zip_code=${zip}`,
+  //     requestOptions
+  //   );
+  //   console.log(
+  //     `https://mashvisor-api.p.rapidapi.com/rental-rates?state=${state}&source=airbnb&city=${city}&zip_code=${zip}`
+  //   );
   const res = await fetch(
-    `https://mashvisor-api.p.rapidapi.com/rental-rates?state=${state}&source=airbnb&city=${city}&zip_code=${zip}`,
+    `https://mashvisor-api.p.rapidapi.com/rental-rates?state=${state}&source=airbnb&zip_code=${zip}`,
     requestOptions
   );
   console.log(
-    `https://mashvisor-api.p.rapidapi.com/rental-rates?state=${state}&source=airbnb&city=${city}&zip_code=${zip}`
+    `https://mashvisor-api.p.rapidapi.com/rental-rates?state=${state}&source=airbnb&zip_code=${zip}`
   );
   const data = await res.json();
   console.log("\x1b[36m%s\x1b[0m", "data:", "\n");
