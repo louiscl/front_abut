@@ -32,7 +32,8 @@ requestHeaders.append("Content-Type", "application/json");
 // };
 
 const fetchBuildingData = async (address) => {
-  //   link defaults to proxy defined in package.json
+  //  link defaults to proxy defined in package.json
+  console.log('\x1b[36m%s\x1b[0m', 'address:','\n',address);
   const listRequestOptions = {
     method: "GET",
     headers: requestHeaders,
