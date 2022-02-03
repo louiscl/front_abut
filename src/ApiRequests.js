@@ -58,6 +58,8 @@ const fetchBuildingData = async (address) => {
   //   return { data: data };
 };
 
+
+
 // AirDNA
 
 const normalizeAddress = async (address) => {

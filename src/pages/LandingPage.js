@@ -1,36 +1,30 @@
-// import * as React from "react";
 import React, { useEffect, useState, useRef, useCallback } from "react";
-import AppBar from "@mui/material/AppBar";
 import Button from "@mui/material/Button";
-import Card from "@mui/material/Card";
 import Paper from "@mui/material/Paper";
-import CardContent from "@mui/material/CardContent";
-import CardMedia from "@mui/material/CardMedia";
 import CssBaseline from "@mui/material/CssBaseline";
 import Stack from "@mui/material/Stack";
 import Box from "@mui/material/Box";
-import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import Link from "@mui/material/Link";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-// added MUI
 import TextField from "@mui/material/TextField";
-// API
+import ImageCard from "../components/ImageCard";
+// APIs
 import {
   fetchBuildingData,
   fetchRentalData,
   normalizeAddress,
 } from "../ApiRequests";
-// image
+
+// Background image
 import Image from "../img/abstract_wave.jpeg";
 
+// Styling
 const styles = {
   paperContainer: {
     backgroundImage: `url(${Image})`,
   },
 };
-
 const theme = createTheme();
 
 export default function LandingPage() {
@@ -38,11 +32,11 @@ export default function LandingPage() {
   const [address, setAddress] = useState("10 NE 11th St, Miami, FL 33132");
   const [addressHash, setAddressHash] = useState();
   const [buildingData, setBuildingData] = useState("Result");
-  const [rentalData, setRentalData] = useState("");
+  const [rentalData, setRentalData] = useState("d");
   const [rentalStatement, setRentalStatement] = useState("");
   const [constAddress, setConstAddress] = useState("");
 
-  //   const [rentalData, setRentalData] = useState("");
+  // reference for scrolling
   const myRef = useRef(null);
   const executeScroll = () =>
     myRef.current.scrollIntoView({ behavior: "smooth" });
@@ -109,12 +103,11 @@ export default function LandingPage() {
     const apartmentClass = "studio_value";
     console.log("reached");
 
-    // // Fetch Rental Data
+    // Fetch Rental Data
     const rentalResult = await getRentalData(adHash);
     console.log("\x1b[36m%s\x1b[0m", "result:", "\n", rentalResult);
     setRentalData(rentalResult[apartmentClass]);
 
-    //
     determineRevenue(rentalResult, apartmentClass);
     delay(400).then(() => executeScroll());
   };
@@ -122,18 +115,9 @@ export default function LandingPage() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      {/* <AppBar position="relative">
-        <Toolbar>
-          <Typography variant="h6" color="inherit" noWrap>
-            ABUT
-          </Typography>
-        </Toolbar>
-      </AppBar> */}
       <Paper style={styles.paperContainer}>
-        {/* Hero unit */}
         <Box
           sx={{
-            // bgcolor: "background.paper",
             pt: 8,
             pb: 6,
           }}
@@ -211,20 +195,6 @@ export default function LandingPage() {
           </Container>
           <div ref={myRef}></div>
         </Box>
-        {/* <Box>
-          {rentalData == "" ? (
-            <></>
-          ) : (
-            <Typography
-              variant="h5"
-              align="center"
-              color="text.secondary"
-              paragraph
-            >
-              You could earn up to {rentalStatement} USD in the first year!
-            </Typography>
-          )}
-        </Box> */}
         {rentalData == "" ? (
           <Container
             sx={{
@@ -239,46 +209,27 @@ export default function LandingPage() {
               flexDirection: "row",
               justifyContent: "center",
             }}
-            maxWidth="md"
           >
-            {/* End hero unit */}
-            <Card
-              sx={{
-                height: "500px",
-                width: "400px",
-                display: "flex",
-                flexDirection: "column",
-                borderRadius: 6,
-              }}
-            >
-              <CardMedia
-                component="img"
-                sx={{
-                  16: 9,
-                  height: "300px",
-                  // pt: "56.25%",
-                }}
-                // image={`http://3.92.189.123:8000/location/${convertAddress()}`}
-                image={`http://3.92.189.123:8000/overlay/${convertAddress()}`}
-                alt="random"
-              />
-              <CardContent sx={{ flexGrow: 1 }}>
-                <Typography gutterBottom variant="h6" component="h2">
-                  {constAddress}
-                </Typography>
-                <Typography variant="h5" color="text.secondary">
-                  You could earn up to {rentalStatement} USD in the first year!
-                </Typography>
-              </CardContent>
-            </Card>
+            <ImageCard
+              url={`http://3.92.189.123:8000/overlay/${convertAddress()}`}
+              constAddress={constAddress}
+              rentalStatement={rentalStatement}
+            />
+            <ImageCard
+              url={`http://3.92.189.123:8000/segment/${convertAddress()}`}
+              constAddress={constAddress}
+              rentalStatement={rentalStatement}
+            />
+            <ImageCard
+              url={`http://3.92.189.123:8000/best_fit_rectangle/${convertAddress()}`}
+              constAddress={constAddress}
+              rentalStatement={rentalStatement}
+            />
           </Container>
         )}
       </Paper>
       {/* Footer */}
       <Box sx={{ bgcolor: "background.paper", p: 6 }} component="footer">
-        {/* <Typography variant="h6" align="center" gutterBottom>
-          Footer
-        </Typography> */}
         <Typography
           variant="subtitle1"
           align="center"
