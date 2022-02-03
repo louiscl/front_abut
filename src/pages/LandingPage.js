@@ -32,7 +32,7 @@ export default function LandingPage() {
   const [address, setAddress] = useState("10 NE 11th St, Miami, FL 33132");
   const [addressHash, setAddressHash] = useState();
   const [buildingData, setBuildingData] = useState("Result");
-  const [rentalData, setRentalData] = useState("d");
+  const [rentalData, setRentalData] = useState("");
   const [rentalStatement, setRentalStatement] = useState("");
   const [constAddress, setConstAddress] = useState("");
 
